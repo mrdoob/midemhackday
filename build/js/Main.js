@@ -12,6 +12,14 @@ function init() {
 	camera.position.z = 100;
 	scene.add( camera );
 
+	var light = new THREE.PointLight( 0xffffff );
+	light.position.y = 100;
+	scene.add( light );
+
+	var light = new THREE.PointLight( 0xffffff, 0.5 );
+	light.position.y = - 100;
+	scene.add( light );
+
 	timer = new Timer();
 	timer.play();
 
@@ -34,7 +42,7 @@ function init() {
 	scene.add( cube );
 	*/
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer( { alpha: false } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
 
