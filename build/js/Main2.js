@@ -142,13 +142,12 @@ function getPitches(seg) {
     for (var i = 0; i < seg.pitches.length; i++) {
         if (seg.pitches[i] > max) {
             max = seg.pitches[i];
-            bestIndex = i;
         }
     }
 
     var pitches = [];
     for (var i = 0; i < seg.pitches.length; i++) {
-        if (seg.pitches[i] > max * .75) {
+        if (seg.pitches[i] > max * .50) {
             pitches.push(i);
         }
     }
