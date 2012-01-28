@@ -1,0 +1,169 @@
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="../build/js/libs/Three.js"></script>
+		<script src="../build/js/libs/Timer.js"></script>
+
+		<script>
+
+			var canvas;			
+			var controls = [], points = [], spline;
+			var timer;
+
+			init();
+			update();
+
+			function init () {
+
+				canvas = document.createElement( 'canvas' );
+				canvas.width = 1024;
+				canvas.height = 512;
+				document.body.appendChild( canvas );			
+
+				canvas.context = canvas.getContext( '2d' );
+				canvas.context.lineWidth = 2;
+				canvas.context.strokeStyle = '#ff0000';
+				canvas.context.fillStyle = '#f0f0f0';
+
+				for ( var i = 0, l = 6; i < l; i ++ ) {
+
+					var point = new THREE.Vector3( i / l, Math.random(), 0 );
+					points.push( point );
+
+					var control = document.createElement( 'div' );
+					control.style.position = 'absolute';
+					control.style.width = '10px';
+					control.style.height = '10px';
+					control.style.cursor = 'pointer';
+					control.style.backgroundColor = '#ff0000';
+					control.addEventListener( 'mousedown', onControlMouseDown, false );
+					control.point = point;
+					controls.push( control );
+
+					document.body.appendChild( control );
+
+				}
+
+				var selected;
+
+				function onControlMouseDown( event ) {
+
+					event.preventDefault();
+
+					selected = this;
+
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+					document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+				};
+
+				function onDocumentMouseMove( event ) {
+
+					selected.style.left = ( event.clientX - 5 ) + 'px';
+					selected.style.top = ( event.clientY - 5 ) + 'px';
+
+					selected.point.x = event.clientX / getX( 1 );
+					selected.point.y = event.clientY / getY( 1 );
+
+					update();
+
+				};
+
+				function onDocumentMouseUp( event ) {
+
+					document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+					document.removeEventListener( 'mouseup', onDocumentMouseUp, false );				
+
+				};
+
+				//
+
+				spline = new THREE.Spline( points );
+
+				var timer = new Timer( 2 );
+				timer.loop = true;
+				timer.play();
+
+				var ball = document.createElement( 'canvas' );
+				ball.width = 32;
+				ball.height = 32;
+				ball.style.position = 'absolute';
+				document.body.appendChild( ball );
+
+				ball.context = ball.getContext( '2d' );
+				ball.context.fillStyle = 'rgba(0,0,0,0.5)';
+				ball.context.beginPath();				
+				ball.context.arc( 16, 16, 16, 0, Math.PI * 2, true );
+				ball.context.fill();
+
+				setInterval( function () {
+
+					var point = spline.getPoint( timer.currentTime / timer.duration );
+
+					ball.style.left = getX( point.x ) - 16 + 'px';
+					ball.style.top = getY( point.y ) - 16 + 'px';
+
+				}, 1000 / 60 );
+
+			}
+
+			function getX( value ) {
+
+				return value * canvas.width;
+
+			}
+
+			function getY( value ) {
+
+				return value * canvas.height;
+
+			}
+
+			function update() {
+
+				// controls
+
+				for ( var i = 0, l = controls.length; i < l; i ++ ) {
+
+					var point = points[ i ];
+
+					var control = controls[ i ];
+					control.style.left = getX( point.x ) - 5 + 'px';
+					control.style.top = getY( point.y ) - 5 + 'px';
+
+				}
+
+				// line
+
+				canvas.context.fillRect( 0, 0, canvas.width, canvas.height );
+				canvas.context.beginPath();
+
+				for ( var i = 0, l = 100; i <= l; i ++ ) {
+
+					var point = spline.getPoint( i / l );
+
+					if ( i === 0 ) {
+
+						canvas.context.moveTo( getX( point.x ), getY( point.y ) );
+
+					} else {
+
+						canvas.context.lineTo( getX( point.x ), getY( point.y ) );
+
+					}
+
+				}
+
+				canvas.context.stroke();
+
+			}
+
+		</script>
+	</body>
+</html>
