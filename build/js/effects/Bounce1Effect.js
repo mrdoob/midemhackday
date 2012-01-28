@@ -1,10 +1,6 @@
-var Bounce1Effect = function ( geometry ) {
+var Bounce1Effect = function ( mesh ) {
 
-	this.object = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: Math.random() * 0xffffff } ) );
-	this.object.position.y = 50;
-	this.object.castShadow = true;
-	this.object.receiveShadow = true;
-	this.object.visible = false;
+	mesh.visible = false;
 
 	var spline1 = new THREE.Spline( [
 		new THREE.Vector3( 0, 50, 0 ),
@@ -24,13 +20,13 @@ var Bounce1Effect = function ( geometry ) {
 
 	this.show = function () {
 
-		this.object.visible = true;
+		mesh.visible = true;
 
 	};
 
 	this.hide = function () {
 
-		this.object.visible = false;
+		mesh.visible = false;
 
 	};
 
@@ -48,8 +44,8 @@ var Bounce1Effect = function ( geometry ) {
 
 		}
 
-		this.object.position.x = point.x;
-		this.object.position.y = point.y;
+		mesh.position.x = point.x;
+		mesh.position.y = point.y;
 
 	};
 

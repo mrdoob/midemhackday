@@ -17,7 +17,19 @@ var Machine1 = function ( sequencer ) {
 
 	var cannon = new THREE.LatheGeometry( shape, 20 )
 	var cylinder = new THREE.CylinderGeometry( 5, 5, 1, 20 );
-	var material = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+
+	var path = "files/cubemap/";
+	var format = '.jpg';
+	var urls = [
+			path + 'px' + format, path + 'nx' + format,
+			path + 'py' + format, path + 'ny' + format,
+			path + 'pz' + format, path + 'nz' + format
+		];
+
+	var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
+	reflectionCube.format = THREE.RGBFormat;
+
+	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	for ( var i = 0, l = 12; i < l; i ++ ) {
 
@@ -55,13 +67,18 @@ var Machine1 = function ( sequencer ) {
 	}
 
 	var geometry = new THREE.SphereGeometry( 2 );
+	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	for ( var i = 0, l = 100; i < l; i ++ ) {
 
-		var effect = new Bounce1Effect( geometry );
-		effect.object.position.z = Math.floor( Math.random() * 12 ) * 10;
-		container.add( effect.object );
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.position.y = 50;
+		mesh.position.z = Math.floor( Math.random() * 12 ) * 10;
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		container.add( mesh );
 
+		var effect = new Bounce1Effect( mesh );
 		sequencer.add( effect, i / 8, i / 8 + 1 );
 
 	}	
