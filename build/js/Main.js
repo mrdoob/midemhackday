@@ -9,8 +9,13 @@ function init() {
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.x = 50;
+	camera.position.y = 25;
 	camera.position.z = 100;
 	scene.add( camera );
+
+	var ambient = new THREE.AmbientLight( 0x404040 );
+	scene.add( ambient );
 
 	var light = new THREE.DirectionalLight( 0xffffff );
 	light.position.set( 0, 1, 0 );

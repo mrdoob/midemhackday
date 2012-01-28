@@ -3,6 +3,8 @@
 		<style>
 			body {
 				margin: 0;
+				font-family: Monospace;
+				font-size: 12px;
 			}
 		</style>
 	</head>
@@ -12,7 +14,8 @@
 
 		<script>
 
-			var canvas;			
+			var amount = 5;
+			var canvas, button, text;			
 			var controls = [], points = [], spline;
 			var timer;
 
@@ -31,7 +34,26 @@
 				canvas.context.strokeStyle = '#ff0000';
 				canvas.context.fillStyle = '#f0f0f0';
 
-				for ( var i = 0, l = 6; i < l; i ++ ) {
+				button = document.createElement( 'button' );
+				button.style.position = 'absolute';
+				button.style.left = canvas.width + 'px';
+				button.style.top = '0px';
+				button.textContent = 'IMPORT';
+				button.addEventListener( 'click', function ( event ) {
+
+				}, false );
+				document.body.appendChild( button );
+
+				text = document.createElement( 'div' );
+				text.style.position = 'absolute';
+				text.style.left = canvas.width + 'px';
+				text.style.top = '30px';
+				text.style.width = '230px';
+				text.style.padding = '5px';
+				text.setAttribute( 'contenteditable', 'true' );
+				document.body.appendChild( text );
+
+				for ( var i = 0, l = amount; i < l; i ++ ) {
 
 					var point = new THREE.Vector3( i / l, Math.random(), 0 );
 					points.push( point );
@@ -65,11 +87,11 @@
 
 				function onDocumentMouseMove( event ) {
 
-					selected.style.left = ( event.clientX - 5 ) + 'px';
-					selected.style.top = ( event.clientY - 5 ) + 'px';
+					var x = Math.max( 0, Math.min( canvas.width, event.clientX ) );
+					var y = Math.max( 0, Math.min( canvas.height, event.clientY ) );
 
-					selected.point.x = event.clientX / getX( 1 );
-					selected.point.y = event.clientY / getY( 1 );
+					selected.point.x = x / getX( 1 );
+					selected.point.y = y / getY( 1 );
 
 					update();
 
@@ -86,7 +108,7 @@
 
 				spline = new THREE.Spline( points );
 
-				var timer = new Timer( 2 );
+				var timer = new Timer( 1 );
 				timer.loop = true;
 				timer.play();
 
@@ -94,6 +116,7 @@
 				ball.width = 32;
 				ball.height = 32;
 				ball.style.position = 'absolute';
+				ball.style.WebkitTransform = 'translateZ(0)';
 				document.body.appendChild( ball );
 
 				ball.context = ball.getContext( '2d' );
@@ -102,14 +125,18 @@
 				ball.context.arc( 16, 16, 16, 0, Math.PI * 2, true );
 				ball.context.fill();
 
-				setInterval( function () {
+				function animate() {
+			
+					requestAnimationFrame( animate );
 
 					var point = spline.getPoint( timer.currentTime / timer.duration );
 
 					ball.style.left = getX( point.x ) - 16 + 'px';
 					ball.style.top = getY( point.y ) - 16 + 'px';
 
-				}, 1000 / 60 );
+				};
+
+				animate();
 
 			}
 
@@ -127,6 +154,9 @@
 
 			function update() {
 
+				text.innerHTML = '';
+				var elements = [];
+
 				// controls
 
 				for ( var i = 0, l = controls.length; i < l; i ++ ) {
@@ -137,7 +167,11 @@
 					control.style.left = getX( point.x ) - 5 + 'px';
 					control.style.top = getY( point.y ) - 5 + 'px';
 
+					elements.push( 'new THREE.Vector3( ' + Math.round( point.x * 100 ) + ', ' + Math.round( 100 - point.y * 100 ) + ', 0 )' );
+
 				}
+
+				text.innerHTML = '[<br>' + elements.join(',<br>') + '<br>]';
 
 				// line
 
@@ -163,6 +197,45 @@
 				canvas.context.stroke();
 
 			}
+			
+			/*
+			function Spline( points ) {
+
+				var c = [], vector = new THREE.Vector3();
+
+				this.getPoint = function ( progress ) {
+
+					var point = ( points.length - 1 ) * progress;
+					var intPoint = Math.floor( point );
+					var weight = point - intPoint;
+
+					c[ 0 ] = intPoint == 0 ? intPoint : intPoint - 1;
+					c[ 1 ] = intPoint;
+					c[ 2 ] = intPoint > points.length - 2 ? intPoint : intPoint + 1;
+					c[ 3 ] = intPoint > points.length - 3 ? intPoint : intPoint + 2;
+
+					vector.x = interpolate( points[ c[ 0 ] ].x, points[ c[ 1 ] ].x, points[ c[ 2 ] ].x, points[ c[ 3 ] ].x, weight );
+					vector.y = interpolate( points[ c[ 0 ] ].y, points[ c[ 1 ] ].y, points[ c[ 2 ] ].y, points[ c[ 3 ] ].y, weight );
+					// vector.z = interpolate( points[ c[ 0 ] ].z, points[ c[ 1 ] ].z, points[ c[ 2 ] ].z, points[ c[ 3 ] ].y, weight );
+
+					return vector;
+
+				}
+
+				// Catmull-Rom
+
+				function interpolate( p0, p1, p2, p3, t ) {
+
+					var v0 = ( p2 - p0 ) * 0.5;
+					var v1 = ( p3 - p1 ) * 0.5;
+					var t2 = t * t;
+					var t3 = t * t2;
+					return ( 2 * p1 - 2 * p2 + v0 + v1 ) * t3 + ( - 3 * p1 + 3 * p2 - 2 * v0 - v1 ) * t2 + v0 * t + p1;
+
+				}
+
+			}
+			*/
 
 		</script>
 	</body>
