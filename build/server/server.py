@@ -28,14 +28,17 @@ class Server(object):
         self.cached = 0;
 
 
-    def search(self, q='', artist='', title='', callback='', _=''):
+    def search(self, q='', sid='', artist='', title='', callback='', _=''):
         if callback:
             cherrypy.response.headers['Content-Type']= 'text/javascript'
         else:
             cherrypy.response.headers['Content-Type']= 'application/json'
         print 'total', self.total, 'cached', self.cached, q, callback
 
-        if len(artist) > 0:
+        if len(sid) > 0:
+            result = song_api.Song(sid, buckets=[rcatalog, 'tracks', 'audio_summary'], limit=True, results=1)
+            results = [result]
+        elif len(artist) > 0:
             results = song_api.search(artist=artist,  title=title,\
                 buckets=[rcatalog, 'tracks', 'audio_summary'], limit=True, results=1)
         else:

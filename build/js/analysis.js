@@ -6,6 +6,12 @@ function fetchTrackInfoByCombined(combined, callback) {
     getJSONP(url, function(data) { filter(data); callback(data); });
 }
 
+function fetchTrackInfoBySongID(sid, callback) {
+    var url ='http://labs.echonest.com/SongServer/search?callback=?&sid=' + sid;
+    console.log("Fetching track", sid);
+    getJSONP(url, function(data) { filter(data); callback(data); });
+}
+
 function fetchTrackInfoByArtistAndTitle(artist, title, callback) {
     var url ='http://labs.echonest.com/SongServer/search?callback=?&artist=' + artist + '&title=' + title;
     console.log("Fetching track", artist, title);
