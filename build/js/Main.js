@@ -12,12 +12,12 @@ function init() {
 	camera.position.z = 100;
 	scene.add( camera );
 
-	var light = new THREE.PointLight( 0xffffff );
-	light.position.y = 100;
+	var light = new THREE.DirectionalLight( 0xffffff );
+	light.position.set( 0, 1, 0 );
 	scene.add( light );
 
-	var light = new THREE.PointLight( 0xffffff, 0.5 );
-	light.position.y = - 100;
+	var light = new THREE.DirectionalLight( 0xffffff, 0.25 );
+	light.position.set( 0, -1, 0 );
 	scene.add( light );
 
 	timer = new Timer();
