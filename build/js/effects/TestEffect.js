@@ -1,41 +1,53 @@
-var TestEffect = function ( geometries ) {
+var TestEffect = function ( geometry ) {
 
-	this.object = new THREE.Object3D();
+	this.object = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: Math.random() * 0xffffff } ) );
+	this.object.position.y = 50;
+	this.object.visible = false;
 
-	var ball = new THREE.Mesh( new THREE.SphereGeometry( 5 ), new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-	ball.position.x = 50;
-	ball.position.y = -25;
-	this.object.add( ball );
+	var spline1 = new THREE.Spline( [
+		new THREE.Vector3( 0, 50, 0 ),
+		new THREE.Vector3( 25, 65, 0 ),
+		new THREE.Vector3( 50, 71, 0 ),
+		new THREE.Vector3( 75, 65, 0 ),
+		new THREE.Vector3( 100, 50, 0 )
+	] );
 
-	var cylinder = new THREE.Mesh( new THREE.CylinderGeometry( 5, 5, 1 ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
-	cylinder.position.x = - 50;
-	cylinder.rotation.z = - 45 * Math.PI / 180;
-	this.object.add( cylinder );
-
-	var spline = new THREE.Spline( [
-		new THREE.Vector3( 50, -25, 0 ),
-		new THREE.Vector3( 5, 10, 0 ),
-		new THREE.Vector3( -50, 0, 0 ),
-		new THREE.Vector3( -50, 0, 0 ),
-		new THREE.Vector3( -25, -15, 0 ),
-		new THREE.Vector3( 10, -50, 0 )
+	var spline2 = new THREE.Spline( [
+		new THREE.Vector3( 100, 50, 0 ),
+		new THREE.Vector3( 77, 54, 0 ),
+		new THREE.Vector3( 52, 46, 0 ),
+		new THREE.Vector3( 32, 25, 0 ),
+		new THREE.Vector3( 18, 0, 0 )
 	] );
 
 	this.show = function () {
 
-		// console.log( "show" );
+		this.object.visible = true;
 
 	};
 
 	this.hide = function () {
 
-		// console.log( "hide" );
+		this.object.visible = false;
 
 	};
 
 	this.update = function ( progress ) {
 
-		ball.position.copy( spline.getPoint( progress ) );
+		var point;
+
+		if ( progress < 0.5 ) {
+
+			point = spline1.getPoint( progress * 2 );
+
+		} else {
+
+			point = spline2.getPoint( progress * 2 - 1 );
+
+		}
+
+		this.object.position.x = point.x;
+		this.object.position.y = point.y;
 
 	};
 

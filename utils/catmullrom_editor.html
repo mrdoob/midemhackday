@@ -3,6 +3,8 @@
 		<style>
 			body {
 				margin: 0;
+				font-family: Monospace;
+				font-size: 12px;
 			}
 		</style>
 	</head>
@@ -12,7 +14,8 @@
 
 		<script>
 
-			var canvas;			
+			var amount = 5;
+			var canvas, button, text;			
 			var controls = [], points = [], spline;
 			var timer;
 
@@ -31,7 +34,37 @@
 				canvas.context.strokeStyle = '#ff0000';
 				canvas.context.fillStyle = '#f0f0f0';
 
-				for ( var i = 0, l = 6; i < l; i ++ ) {
+				button = document.createElement( 'button' );
+				button.style.position = 'absolute';
+				button.style.left = canvas.width + 'px';
+				button.style.top = '0px';
+				button.textContent = 'IMPORT';
+				button.addEventListener( 'click', function ( event ) {
+
+					var data = eval( text.textContent );
+
+					for ( var i = 0; i < points.length; i ++ ) {
+
+						points[ i ].x = data[ i ].x / 100;
+						points[ i ].y = ( 100 - data[ i ].y ) / 100;
+
+					}
+
+					update();
+
+				}, false );
+				document.body.appendChild( button );
+
+				text = document.createElement( 'div' );
+				text.style.position = 'absolute';
+				text.style.left = canvas.width + 'px';
+				text.style.top = '30px';
+				text.style.width = '230px';
+				text.style.padding = '5px';
+				text.setAttribute( 'contenteditable', 'true' );
+				document.body.appendChild( text );
+
+				for ( var i = 0, l = amount; i < l; i ++ ) {
 
 					var point = new THREE.Vector3( i / l, Math.random(), 0 );
 					points.push( point );
@@ -65,11 +98,11 @@
 
 				function onDocumentMouseMove( event ) {
 
-					selected.style.left = ( event.clientX - 5 ) + 'px';
-					selected.style.top = ( event.clientY - 5 ) + 'px';
+					var x = Math.max( 0, Math.min( canvas.width, event.clientX ) );
+					var y = Math.max( 0, Math.min( canvas.height, event.clientY ) );
 
-					selected.point.x = event.clientX / getX( 1 );
-					selected.point.y = event.clientY / getY( 1 );
+					selected.point.x = x / getX( 1 );
+					selected.point.y = y / getY( 1 );
 
 					update();
 
@@ -86,7 +119,7 @@
 
 				spline = new THREE.Spline( points );
 
-				var timer = new Timer( 2 );
+				var timer = new Timer( 1 );
 				timer.loop = true;
 				timer.play();
 
@@ -94,6 +127,7 @@
 				ball.width = 32;
 				ball.height = 32;
 				ball.style.position = 'absolute';
+				ball.style.WebkitTransform = 'translateZ(0)';
 				document.body.appendChild( ball );
 
 				ball.context = ball.getContext( '2d' );
@@ -102,14 +136,18 @@
 				ball.context.arc( 16, 16, 16, 0, Math.PI * 2, true );
 				ball.context.fill();
 
-				setInterval( function () {
+				function animate() {
+			
+					requestAnimationFrame( animate );
 
 					var point = spline.getPoint( timer.currentTime / timer.duration );
 
 					ball.style.left = getX( point.x ) - 16 + 'px';
 					ball.style.top = getY( point.y ) - 16 + 'px';
 
-				}, 1000 / 60 );
+				};
+
+				animate();
 
 			}
 
@@ -127,6 +165,9 @@
 
 			function update() {
 
+				text.innerHTML = '';
+				var elements = [];
+
 				// controls
 
 				for ( var i = 0, l = controls.length; i < l; i ++ ) {
@@ -137,7 +178,11 @@
 					control.style.left = getX( point.x ) - 5 + 'px';
 					control.style.top = getY( point.y ) - 5 + 'px';
 
+					elements.push( 'new THREE.Vector3( ' + Math.round( point.x * 100 ) + ', ' + Math.round( 100 - point.y * 100 ) + ', 0 )' );
+
 				}
+
+				text.innerHTML = '[<br>' + elements.join(',<br>') + '<br>]';
 
 				// line
 
