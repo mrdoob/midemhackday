@@ -13,6 +13,7 @@ import pprint
 
 from pyechonest import song as song_api, config
 config.TRACE_API_CALLS=True
+config.ECHO_NEST_API_KEY='EHY4JJEGIOFA1RCJP'
 import collections
 import hashlib
 
@@ -27,7 +28,7 @@ class Server(object):
         self.cached = 0;
 
 
-    def search(self, q='', artist='', title='', callback=''):
+    def search(self, q='', artist='', title='', callback='', _=''):
         if callback:
             cherrypy.response.headers['Content-Type']= 'text/javascript'
         else:
@@ -48,15 +49,15 @@ class Server(object):
             results = self.read_from_cache(id)
             if results:
                 print 'cache hit'
-                return results
             else:
                 print 'cache miss'
                 response['status'] = 'ok'
                 t = self.get_track(id)
                 response['track'] = t
-                results = to_json(response, callback)
+                results = to_json(response, None)
                 self.write_to_cache(id, results)
-                return results
+            results = callback + "(" + results + ")"
+            return results
         else:
             response['status'] = 'not_found'
             return to_json(response, callback)

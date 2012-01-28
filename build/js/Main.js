@@ -45,7 +45,7 @@ function init() {
 	renderer = new THREE.WebGLRenderer( { alpha: false } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
-
+    analysisTest();
 }
 
 function animate() {
