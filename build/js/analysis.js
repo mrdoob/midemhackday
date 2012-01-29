@@ -28,11 +28,10 @@ function jq_fetchTrackInfoByArtistAndTitle(artist, title, callback) {
 }
 
 function filter(data) {
-    console.log("filtering " + data.track.analysis.segments.length + " segments");
-    clusterSegments(data.track, 12, 'timbre_cluster', 'timbre');
-    clusterSegments(data.track, 12, 'pitch_cluster', 'pitches');
-    assignPitches(data.track);
     filterSegments(data.track);
+    clusterSegments(data.track, 12, 'timbre_cluster', 'timbre');
+    clusterSegments(data.track, 3, 'pitch_cluster', 'pitches');
+    assignPitches(data.track);
 }
 
 
@@ -57,7 +56,7 @@ function filterSegments(track) {
         }
     }
     track.analysis.fsegments = fsegs;
-    console.log('fs', track.analysis.fsegments.length);
+    track.analysis.segments = fsegs;
 }
 
 function assignPitches(track) {
@@ -84,7 +83,7 @@ function getPitchList(seg) {
             pitches.push(i);
         }
     }
-    // if all the pitches are high, it is really just
+    // if lots of the pitches are high, it is really just
     // noise so collapse those into a single pitch
 
     if (pitches.length > 4) {
@@ -96,7 +95,6 @@ function getPitchList(seg) {
 function isSimilar(seg1, seg2) {
     var threshold = 1;
     var distance = timbral_distance(seg1, seg2);
-    console.log('simdistance', distance);
     return (distance < threshold);
 }
 
@@ -208,7 +206,6 @@ function clusterSegments(track, numClusters, fieldName, vecName) {
                 seg[fname] = newCluster;
             }
         }
-        console.log("loopleft", maxLoops, 'switches', switches);
         if (switches == 0) {
             break;
         }
