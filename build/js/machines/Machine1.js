@@ -72,7 +72,7 @@ var Machine1 = function ( sequencer, data ) {
 
 	//
 
-	var geometry = new THREE.SphereGeometry( 2 );
+	var geometry = new THREE.IcosahedronGeometry( 1.5, 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	var segs = data.track.analysis.segments;
