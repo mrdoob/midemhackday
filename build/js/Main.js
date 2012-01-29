@@ -7,6 +7,52 @@ animate();
 
 function init() {
 
+	audio = document.createElement('audio');
+
+	document.addEventListener( 'keydown', function ( event ) {
+
+		switch ( event.keyCode ) {
+
+			/* space */
+			case 32:
+
+			        audio.paused ? audio.play() : audio.pause();
+			        break;
+
+			case 37:
+
+			        audio.currentTime --;
+			        sequencer.clear();
+			        break;
+
+			case 39:
+
+			        audio.currentTime ++;
+			        sequencer.clear();
+			        break;
+
+			case 38:
+
+			        audio.playbackRate += 0.1;
+			        break;
+
+			case 40:
+
+			        audio.playbackRate -= 0.1;
+			        break;
+
+			/* m */
+			case 77:
+
+			        audio.volume = audio.volume ? 0 : 1;
+			        break;
+
+		}
+
+	}, false );
+
+	//
+
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -49,7 +95,6 @@ function build() {
 
 		scene.add( new Machine1( sequencer, data ) );
 
-		audio = document.createElement('audio');
 		audio.src = data.track.audio;
 		audio.play();
 
