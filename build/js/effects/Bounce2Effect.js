@@ -1,4 +1,4 @@
-var Bounce1Effect = function ( mesh, volume ) {
+var Bounce2Effect = function ( mesh ) {
 
 	mesh.visible = false;
 
@@ -9,17 +9,6 @@ var Bounce1Effect = function ( mesh, volume ) {
 		new THREE.Vector3( 100, 50, 0 ),
 		new THREE.Vector3( 18, 0, 0 )
 	];
-
-	switch ( volume ) {
-
-		case 0:
-			path[ 1 ] = new THREE.Vector3( 95, 45, 0 );
-			break;
-		case 2:
-			path[ 1 ] = new THREE.Vector3( 105, 55, 0 );
-			break;
-
-	}
 
 
 	this.show = function () {
@@ -62,5 +51,5 @@ var Bounce1Effect = function ( mesh, volume ) {
 	};
 
 };
-Bounce1Effect.prototype = new SequencerItem();
-Bounce1Effect.prototype.constructor = Bounce1Effect;
+Bounce2Effect.prototype = new SequencerItem();
+Bounce2Effect.prototype.constructor = Bounce2Effect;

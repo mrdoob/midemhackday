@@ -21,13 +21,13 @@ function init() {
 
 			case 37:
 
-			        audio.currentTime --;
+			        audio.currentTime -= audio.playbackRate;
 			        sequencer.clear();
 			        break;
 
 			case 39:
 
-			        audio.currentTime ++;
+			        audio.currentTime += audio.playbackRate;
 			        sequencer.clear();
 			        break;
 
@@ -58,7 +58,7 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.x = 0;
 	camera.position.y = 150;
-	camera.position.z = 200;
+	camera.position.z = 300;
 	camera.target = new THREE.Vector3( 0, 25, 0 );
 	scene.add( camera );
 
@@ -72,7 +72,6 @@ function init() {
 	scene.add( light );
 
 	/*
-
 	var geometry = new THREE.CylinderGeometry( 2, 2, 1000, 10 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
@@ -89,7 +88,6 @@ function init() {
 		scene.add( mesh );
 
 	}
-
 	*/
 
 	renderer = new THREE.WebGLRenderer( { alpha: false } );
@@ -112,16 +110,18 @@ function build() {
 	// var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
     // var songID = 'SOBDWET12A6701F114';    // Daft Punk Steam Machine
     // var songID = 'SOWGEEH12B0B80AD1C';    // Wendy carlos, Concerto Brandebourgeois in D Major - Allegro
-	// var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8
+	var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8
 	// var songID = 'SOVCXFC12B0B808739';    // moog machine
 	// var songID = 'SOAALZA12A8C142A41';    // fur elise
 	// var songID = 'SOSBGUU12B0B80BA69';    // Daft Punk Around The world
 	// var songID = 'SOPBSOF12B0B80620A';    // Fanfare for the common man
-	var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
+	// var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
 
 	fetchTrackInfoBySongID( songID, function ( data ) {
 
-		scene.add( new Machine1( sequencer, data ) );
+		var object = new Machine1( sequencer, data );
+		object.position.z = 100;
+		scene.add( object );
 
 		scene.add( new Machine2( sequencer, data ) );
 

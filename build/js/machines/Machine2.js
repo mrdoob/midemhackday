@@ -1,25 +1,24 @@
 var Machine2 = function ( sequencer, data, filter ) {
 
 	var container = new THREE.Object3D();
-	container.position.x = - 50;
-	container.position.z = 100;
-	// container.position.z = - ( 12 / 2 ) * 10;
 
 	var drums = [];
 
 	var shape = [
 
 		new THREE.Vector3( 6, 0, 0 ),
-		new THREE.Vector3( 8, 0, 20 ),
-		new THREE.Vector3( 9, 0, 27 ),
+		new THREE.Vector3( 6, 0, 1 ),
+		new THREE.Vector3( 5, 0, 3 ),
+		new THREE.Vector3( 9, 0, 31 ),
+		new THREE.Vector3( 10, 0, 32 ),
 		new THREE.Vector3( 10, 0, 33 ),
 		new THREE.Vector3( 8, 0, 33 ),
-		new THREE.Vector3( 5, 0, 0 )
+		new THREE.Vector3( 4, 0, 0 )
 
 	];
 
 	var cannon = new THREE.LatheGeometry( shape, 20 );
-	var cylinder = new THREE.CylinderGeometry( 4, 5, 1, 20 );
+	var pad = new THREE.CubeGeometry( 15, 1, 3 );
 
 	var path = "files/cubemap/";
 	var format = '.jpg';
@@ -34,40 +33,44 @@ var Machine2 = function ( sequencer, data, filter ) {
 
 	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
-	for ( var i = 0, l = 12; i < l; i ++ ) {
+	var mesh = new THREE.Mesh( cannon, material );
+	mesh.position.y = 25;
+	mesh.rotation.x = 90 * Math.PI / 180;
+	mesh.rotation.y = Math.PI;
+	mesh.scale.set( 0.75, 0.75, 0.75 );
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
+	container.add( mesh );
 
-		var mesh = new THREE.Mesh( cylinder, new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } ) );
-		mesh.position.x = 100;
-		mesh.position.y = 50;
-		mesh.position.z = i * 10;
-		mesh.rotation.z = 45 * Math.PI / 180;
+
+	for ( var i = 0, l = 40; i < l; i ++ ) {
+
+		var group = new THREE.Object3D();
+		group.rotation.y = ( i / l ) * Math.PI * 2;
+		container.add( group );
+
+		var mesh = new THREE.Mesh( pad, new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } ) );
+		mesh.position.x = 40;
+		mesh.position.y = 25;
+		mesh.scale.x = ( i / l ) + 1;
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
-		container.add( mesh );
+		group.add( mesh );
 
 		drums.push( mesh );
 
 		var mesh = new THREE.Mesh( cannon, material );
-		mesh.position.x = 0;
-		mesh.position.y = 50;
-		mesh.position.z = i * 10;
-		mesh.rotation.x = 90 * Math.PI / 180;
-		mesh.rotation.y = 127 * Math.PI / 180;
-		mesh.scale.set( 0.5, 0.5, 0.5 );
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
-		container.add( mesh );
-
-		var mesh = new THREE.Mesh( cannon, material );
-		mesh.position.x = 17;
+		mesh.position.x = 75;
 		mesh.position.y = 0;
-		mesh.position.z = i * 10;
+		// mesh.position.z = i * 10;
 		mesh.rotation.x = 90 * Math.PI / 180;
-		mesh.rotation.y = 150 * Math.PI / 180;
+		mesh.rotation.y = Math.PI;
 		mesh.scale.set( 0.5, 0.5, 0.5 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
-		container.add( mesh );
+		group.add( mesh );
+
+		
 
 	}
 

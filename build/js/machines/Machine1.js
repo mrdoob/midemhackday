@@ -9,11 +9,13 @@ var Machine1 = function ( sequencer, data, filter ) {
 	var shape = [
 
 		new THREE.Vector3( 6, 0, 0 ),
-		new THREE.Vector3( 8, 0, 20 ),
-		new THREE.Vector3( 9, 0, 27 ),
+		new THREE.Vector3( 6, 0, 1 ),
+		new THREE.Vector3( 5, 0, 3 ),
+		new THREE.Vector3( 9, 0, 31 ),
+		new THREE.Vector3( 10, 0, 32 ),
 		new THREE.Vector3( 10, 0, 33 ),
 		new THREE.Vector3( 8, 0, 33 ),
-		new THREE.Vector3( 5, 0, 0 )
+		new THREE.Vector3( 4, 0, 0 )
 
 	];
 
@@ -94,7 +96,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 0;
 		mesh.position.z = i * 10;
 		mesh.rotation.x = 90 * Math.PI / 180;
-		mesh.rotation.y = 150 * Math.PI / 180;
+		mesh.rotation.y = 145 * Math.PI / 180;
 		mesh.scale.set( 0.5, 0.5, 0.5 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
