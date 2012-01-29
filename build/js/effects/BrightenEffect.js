@@ -1,51 +1,24 @@
 var BrightenEffect = function ( mesh ) {
 
-	mesh.visible = false;
-
-	var spline1 = new THREE.Spline( [
-		new THREE.Vector3( 0, 50, 0 ),
-		new THREE.Vector3( 25, 65, 0 ),
-		new THREE.Vector3( 50, 71, 0 ),
-		new THREE.Vector3( 75, 65, 0 ),
-		new THREE.Vector3( 100, 50, 0 )
-	] );
-
-	var spline2 = new THREE.Spline( [
-		new THREE.Vector3( 100, 50, 0 ),
-		new THREE.Vector3( 77, 54, 0 ),
-		new THREE.Vector3( 52, 46, 0 ),
-		new THREE.Vector3( 32, 25, 0 ),
-		new THREE.Vector3( 18, 0, 0 )
-	] );
+	var color = new THREE.Color().copy( mesh.material.color );
 
 	this.show = function () {
 
-		mesh.visible = true;
+		mesh.material.color.setRGB( 1, 1, 1 );
 
 	};
 
 	this.hide = function () {
 
-		mesh.visible = false;
+		mesh.material.color.copy( color );
 
 	};
 
 	this.update = function ( progress ) {
 
-		var point;
+		var inverse = ( 1 - progress ) / 2;
 
-		if ( progress < 0.5 ) {
-
-			point = spline1.getPoint( progress * 2 );
-
-		} else {
-
-			point = spline2.getPoint( progress * 2 - 1 );
-
-		}
-
-		mesh.position.x = point.x;
-		mesh.position.y = point.y;
+		mesh.material.color.setRGB( inverse + color.r, inverse + color.g, inverse + color.b );
 
 	};
 

@@ -35,7 +35,7 @@ var Machine1 = function ( sequencer, data ) {
 
 	for ( var i = 0, l = 12; i < l; i ++ ) {
 
-		var mesh = new THREE.Mesh( cylinder, material );
+		var mesh = new THREE.Mesh( cylinder, new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } ) );
 		mesh.position.x = 100;
 		mesh.position.y = 50;
 		mesh.position.z = i * 10;
@@ -72,7 +72,7 @@ var Machine1 = function ( sequencer, data ) {
 
 	//
 
-	var geometry = new THREE.SphereGeometry( 2 );
+	var geometry = new THREE.IcosahedronGeometry( 1.5, 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	var segs = data.track.analysis.segments;
@@ -85,13 +85,16 @@ var Machine1 = function ( sequencer, data ) {
 
 			var mesh = new THREE.Mesh( geometry, material );
 			mesh.position.y = 50;
-			mesh.position.z = Math.floor( seg.pitch_list[j]  ) * 10;
+			mesh.position.z = Math.floor( seg.pitch_list[j] ) * 10;
 			mesh.castShadow = true;
 			mesh.receiveShadow = true;
 			container.add( mesh );
 
 			var effect = new Bounce1Effect( mesh );
 			sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
+
+			var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) ] );
+			sequencer.add( effect, seg.start, seg.start + 0.5);
 
 		}
 
