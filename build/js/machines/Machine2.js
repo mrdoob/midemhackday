@@ -89,6 +89,8 @@ var Machine2 = function ( sequencer, data, filter ) {
 	var geometry = new THREE.IcosahedronGeometry( 1.5, 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
+	var displacement = new THREE.Vector3( 0, - 1.5, 0 );
+
 	var segs = data.track.analysis.segments;
 
     if (!filter || filter(seg)) {
@@ -107,9 +109,9 @@ var Machine2 = function ( sequencer, data, filter ) {
                 groups[ note ].add( mesh );
 
                 var effect = new Bounce2Effect( mesh );
-                sequencer.add( effect, seg.start - 1, seg.start + 1);
+                sequencer.add( effect, seg.start - 0.9, seg.start + 0.9 );
 
-                var effect = new BrightenEffect( drums[ note ] ); // Math.floor( seg.pitch_list[j] )
+                var effect = new HitEffect( drums[ note ], displacement ); // Math.floor( seg.pitch_list[j] )
                 sequencer.add( effect, seg.start, seg.start + 0.5);
 
             }

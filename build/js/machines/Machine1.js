@@ -58,7 +58,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 50;
 		mesh.position.z = i * 10;
 		mesh.rotation.z = 45 * Math.PI / 180;
-		mesh.scale.set( 0.65, 0.65, 0.65 );
+		mesh.scale.set( 0.6, 0.6, 0.6 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		container.add( mesh );
@@ -72,7 +72,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 55;
 		mesh.position.z = i * 10;
 		mesh.rotation.z = 45 * Math.PI / 180;
-		mesh.scale.set( 0.9, 0.9, 0.9 );
+		mesh.scale.set( 0.75, 0.75, 0.75 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		container.add( mesh );
@@ -106,6 +106,8 @@ var Machine1 = function ( sequencer, data, filter ) {
 
 	//
 
+	var displacement = new THREE.Vector3( 1.5, - 1.5, 0 );
+
 	var geometry = new THREE.IcosahedronGeometry( 1.5, 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
@@ -129,7 +131,7 @@ var Machine1 = function ( sequencer, data, filter ) {
                 var effect = new Bounce1Effect( mesh, volume );
                 sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
 
-                var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ] );
+                var effect = new HitEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ], displacement );
                 sequencer.add( effect, seg.start, seg.start + 0.5);
 
             }

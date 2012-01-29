@@ -1,5 +1,6 @@
 var scene, camera, renderer;
 var audio, sequencer;
+var pathCamera, pathCameraTarget;
 
 init();
 build();
@@ -104,6 +105,19 @@ function init() {
 
 function build() {
 
+	pathCamera = new THREE.Spline( [
+		new THREE.Vector3( 0, 100, 100 ),
+		new THREE.Vector3( 50, 100, 0 ),
+		new THREE.Vector3( 100, 30, 0 ),
+		new THREE.Vector3( 0, 100, - 200 )
+	] );
+
+	pathCameraTarget = new THREE.Spline( [
+		new THREE.Vector3( 0, 35, 200 ),
+		new THREE.Vector3( 0, 50, 0 ),
+		new THREE.Vector3( 0, 25, 0 )
+	] );
+
 	sequencer = new Sequencer();
 
 	// var songID = 'SOMAJBN12B20E5E531';    // beatles score: 5
@@ -124,7 +138,7 @@ function build() {
 	fetchTrackInfoBySongID( songID, function ( data ) {
 
 		var object = new Machine1( sequencer, data );
-		object.position.z = 100;
+		object.position.z = 120;
 		scene.add( object );
 
 		scene.add( new Machine2( sequencer, data ) );
@@ -145,8 +159,14 @@ function animate() {
 
 function update() {
 
+	/*
 	camera.position.x = Math.cos( audio.currentTime / 4 ) * 100;
 	camera.position.z = Math.sin( audio.currentTime / 4 ) * 100;
+	camera.lookAt( camera.target );
+	*/
+
+	camera.position.copy( pathCamera.getPoint( audio.currentTime / audio.duration ) );
+	camera.target.copy( pathCameraTarget.getPoint( audio.currentTime / audio.duration ) );
 	camera.lookAt( camera.target );
 
 	sequencer.update( audio.currentTime );
