@@ -28,6 +28,12 @@ function fetchTrackInfoBySongID(sid, callback) {
     }
 }
 
+function fetchHardcodedTrackInfo(sid, callback) {
+    console.log(hardcodedTrack);
+    filter(hardcodedTrack); 
+    callback(hardcodedTrack);
+}
+
 function fetchTrackInfoBySpecial(tid, callback) {
     var url = host + '/SongServer/search?callback=?&special=' + tid;
     var url = host + '/SongServer/search?callback=?&special=' + tid;
@@ -75,7 +81,8 @@ function filter(data) {
 
 
 function filterSegments(track) {
-    var threshold = .3;
+    var threshold = window.globalThreshold == undefined ? .3 : globalThreshold;
+    console.log('fs threshold', threshold);
     var fsegs = [];
     // filtered segments are in fsegs. Use
     // fduration for the duration for filtered sedgments

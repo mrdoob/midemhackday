@@ -9,11 +9,13 @@ var Machine1 = function ( sequencer, data, filter ) {
 	var shape = [
 
 		new THREE.Vector3( 6, 0, 0 ),
-		new THREE.Vector3( 8, 0, 20 ),
-		new THREE.Vector3( 9, 0, 27 ),
+		new THREE.Vector3( 6, 0, 1 ),
+		new THREE.Vector3( 5, 0, 3 ),
+		new THREE.Vector3( 9, 0, 31 ),
+		new THREE.Vector3( 10, 0, 32 ),
 		new THREE.Vector3( 10, 0, 33 ),
 		new THREE.Vector3( 8, 0, 33 ),
-		new THREE.Vector3( 5, 0, 0 )
+		new THREE.Vector3( 4, 0, 0 )
 
 	];
 
@@ -56,7 +58,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 50;
 		mesh.position.z = i * 10;
 		mesh.rotation.z = 45 * Math.PI / 180;
-		mesh.scale.set( 0.65, 0.65, 0.65 );
+		mesh.scale.set( 0.6, 0.6, 0.6 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		container.add( mesh );
@@ -70,7 +72,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 55;
 		mesh.position.z = i * 10;
 		mesh.rotation.z = 45 * Math.PI / 180;
-		mesh.scale.set( 0.9, 0.9, 0.9 );
+		mesh.scale.set( 0.75, 0.75, 0.75 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		container.add( mesh );
@@ -94,7 +96,7 @@ var Machine1 = function ( sequencer, data, filter ) {
 		mesh.position.y = 0;
 		mesh.position.z = i * 10;
 		mesh.rotation.x = 90 * Math.PI / 180;
-		mesh.rotation.y = 150 * Math.PI / 180;
+		mesh.rotation.y = 145 * Math.PI / 180;
 		mesh.scale.set( 0.5, 0.5, 0.5 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
@@ -103,6 +105,8 @@ var Machine1 = function ( sequencer, data, filter ) {
 	}
 
 	//
+
+	var displacement = new THREE.Vector3( 1.5, - 1.5, 0 );
 
 	var geometry = new THREE.IcosahedronGeometry( 1.5, 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
@@ -113,7 +117,8 @@ var Machine1 = function ( sequencer, data, filter ) {
         for (var i = 0; i < segs.length; i++) {
 
             var seg = segs[i];
-            var volume = Math.floor( Math.random() * 3 ); // 0-2
+            //var volume = Math.floor( Math.random() * 3 ); // 0-2
+            var volume = seg.loudness_bucket;
 
             for (var j = 0; j < seg.pitch_list.length; j++) {
 
@@ -127,7 +132,7 @@ var Machine1 = function ( sequencer, data, filter ) {
                 var effect = new Bounce1Effect( mesh, volume );
                 sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
 
-                var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ] );
+                var effect = new HitEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ], displacement );
                 sequencer.add( effect, seg.start, seg.start + 0.5);
 
             }

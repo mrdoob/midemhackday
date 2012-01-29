@@ -1,5 +1,6 @@
 var scene, camera, renderer;
 var audio, sequencer;
+var pathCamera, pathCameraTarget;
 
 init();
 build();
@@ -10,6 +11,7 @@ function init() {
 	audio = document.createElement('audio');
 
 	document.addEventListener( 'keydown', function ( event ) {
+        console.log(event.keyCode);
 
 		switch ( event.keyCode ) {
 
@@ -21,13 +23,13 @@ function init() {
 
 			case 37:
 
-			        audio.currentTime --;
+			        audio.currentTime -= audio.playbackRate;
 			        sequencer.clear();
 			        break;
 
 			case 39:
 
-			        audio.currentTime ++;
+			        audio.currentTime += audio.playbackRate;
 			        sequencer.clear();
 			        break;
 
@@ -46,6 +48,14 @@ function init() {
 
 			        audio.volume = audio.volume ? 0 : 1;
 			        break;
+            /* r */
+			case 82:    
+                    if (!audio.paused) {
+                        audio.pause();
+                    }
+                    audio.playbackRate = 1.0;
+                    audio.currentTime = 0;
+			        break;
 
 		}
 
@@ -57,8 +67,8 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.x = 0;
-	camera.position.y = 150;
-	camera.position.z = 200;
+	camera.position.y = 100;
+	camera.position.z = 300;
 	camera.target = new THREE.Vector3( 0, 25, 0 );
 	scene.add( camera );
 
@@ -68,11 +78,14 @@ function init() {
 	var light = new THREE.SpotLight( 0xffffff, 2 );
 	light.position.set( 0, 300, 0 );
 	light.castShadow = true;
-	light.shadowDarkness = 0.5;
+	light.shadowDarkness = 0.25;
+	scene.add( light );
+
+	var light = new THREE.DirectionalLight( 0xffffff, 1 );
+	light.position.set( 0, - 300, 0 );
 	scene.add( light );
 
 	/*
-
 	var geometry = new THREE.CylinderGeometry( 2, 2, 1000, 10 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
@@ -89,7 +102,6 @@ function init() {
 		scene.add( mesh );
 
 	}
-
 	*/
 
 	renderer = new THREE.WebGLRenderer( { alpha: false } );
@@ -101,6 +113,19 @@ function init() {
 }
 
 function build() {
+
+	pathCamera = new THREE.Spline( [
+		new THREE.Vector3( 0, 100, 100 ),
+		new THREE.Vector3( 50, 100, 0 ),
+		new THREE.Vector3( 100, 30, 0 ),
+		new THREE.Vector3( 0, 100, - 200 )
+	] );
+
+	pathCameraTarget = new THREE.Spline( [
+		new THREE.Vector3( 0, 35, 200 ),
+		new THREE.Vector3( 0, 50, 0 ),
+		new THREE.Vector3( 0, 25, 0 )
+	] );
 
 	sequencer = new Sequencer();
 
@@ -116,27 +141,30 @@ function build() {
 	// var songID = 'SOPBSOF12B0B80620A';    // Fanfare for the common man
 	// var songID = 'SOTKFEY12A8C137EB7';    // The final countdown, seems to kill app
 	// var songID = 'SOLUNLM12B0B806C67';    // apollo/joy
-	//var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8, best
-	//var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
-	//var songID = 'SOQMVDE12B0B80BA5D';    // DP aerodynamic
-	//var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
-	//var songID = 'SOLLSWY12AF72A55D5';    // DP Phoenix
-	//var songID = 'SOUBKFT12A6701F07A';   // DP robot rock
-	//var songID = 'SOKGGVP12B0B80BA6C';    // DP short circuit 
+	// var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
+	// var songID = 'SOQMVDE12B0B80BA5D';    // DP aerodynamic
+	// var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
+	// var songID = 'SOLLSWY12AF72A55D5';    // DP Phoenix
+	// var songID = 'SOUBKFT12A6701F07A';   // DP robot rock
+	// var songID = 'SOKGGVP12B0B80BA6C';    // DP short circuit 
 	var songID = 'SOKLMEP12B0B8062E2';    // HH Chamelion
+	var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8, best
 
-	fetchTrackInfoBySongID( songID, function ( data ) {
 
-        console.log('adding machines');
-		scene.add( new Machine1( sequencer, data ) );
-		//scene.add( new Machine2( sequencer, data ) );
 
+	fetchHardcodedTrackInfo( songID, function ( data ) {
+
+        console.log("creating machine 1");
+		var object = new Machine1( sequencer, data );
+		object.position.z = 120;
+		scene.add( object );
+
+		scene.add( new Machine2( sequencer, data ) );
 		audio.src = data.track.audio;
         console.log('playing audio');
 		audio.play();
 
 	});
-
 }
 
 function animate() {
@@ -148,9 +176,17 @@ function animate() {
 
 function update() {
 
+	/*
 	camera.position.x = Math.cos( audio.currentTime / 4 ) * 100;
 	camera.position.z = Math.sin( audio.currentTime / 4 ) * 100;
 	camera.lookAt( camera.target );
+	*/
+
+    if (!isNaN(audio.duration)) {
+        camera.position.copy( pathCamera.getPoint( audio.currentTime / audio.duration ) );
+        camera.target.copy( pathCameraTarget.getPoint( audio.currentTime / audio.duration ) );
+        camera.lookAt( camera.target );
+    }
 
 	sequencer.update( audio.currentTime );
 

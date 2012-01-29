@@ -1,25 +1,14 @@
-var Bounce1Effect = function ( mesh, volume ) {
+var Bounce2Effect = function ( mesh ) {
 
 	mesh.visible = false;
 
 	var position = new THREE.Vector3();
 
 	var path = [
-		new THREE.Vector3( 0, 50, 0 ),
-		new THREE.Vector3( 100, 50, 0 ),
-		new THREE.Vector3( 18, 0, 0 )
+		new THREE.Vector3( 0, 35, 0 ),
+		new THREE.Vector3( 40, 25, 0 ),
+		new THREE.Vector3( 78, 5, 0 )
 	];
-
-	switch ( volume ) {
-
-		case 0:
-			path[ 1 ] = new THREE.Vector3( 95, 45, 0 );
-			break;
-		case 2:
-			path[ 1 ] = new THREE.Vector3( 105, 55, 0 );
-			break;
-
-	}
 
 
 	this.show = function () {
@@ -43,7 +32,7 @@ var Bounce1Effect = function ( mesh, volume ) {
 			position.multiplyScalar( progress * 2 );
 			position.addSelf( path[ 0 ] );
 
-			position.y += Math.sin( Math.PI * progress * 2 ) * 25;
+			position.y += Math.sin( Math.PI * progress * 2 ) * 40;
 
 		} else {
 
@@ -62,5 +51,5 @@ var Bounce1Effect = function ( mesh, volume ) {
 	};
 
 };
-Bounce1Effect.prototype = new SequencerItem();
-Bounce1Effect.prototype.constructor = Bounce1Effect;
+Bounce2Effect.prototype = new SequencerItem();
+Bounce2Effect.prototype.constructor = Bounce2Effect;

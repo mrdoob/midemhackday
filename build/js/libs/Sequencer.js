@@ -87,6 +87,7 @@ var Sequencer = function () {
 				if ( i !== -1 ) {
 
 					_item.update( 1 );
+					_item.hide();
 					_itemsActive.splice( i, 1 );
 
 				}
