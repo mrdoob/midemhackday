@@ -7,8 +7,19 @@ function fetchTrackInfoByCombined(combined, callback) {
 }
 
 function fetchTrackInfoBySongID(sid, callback) {
-    var url ='http://labs.echonest.com/SongServer/search?callback=?&sid=' + sid;
-    console.log("Fetching track", sid);
+    if (sid.indexOf('TR') == 0) {
+        fetchTrackInfoBySpecial(sid, callback);
+    }  else {
+        var url ='http://labs.echonest.com/SongServer/search?callback=?&sid=' + sid;
+        console.log("Fetching track", sid);
+        getJSONP(url, function(data) { filter(data); callback(data); });
+    }
+}
+
+function fetchTrackInfoBySpecial(tid, callback) {
+    var url ='http://localhost:8642/SongServer/search?callback=?&special=' + tid;
+    var url ='http://labs.echonest.com/SongServer/search?callback=?&special=' + tid;
+    console.log("Fetching track", tid);
     getJSONP(url, function(data) { filter(data); callback(data); });
 }
 
@@ -29,8 +40,8 @@ function jq_fetchTrackInfoByArtistAndTitle(artist, title, callback) {
 
 function filter(data) {
     filterSegments(data.track);
-    clusterSegments(data.track, 12, 'timbre_cluster', 'timbre');
-    clusterSegments(data.track, 3, 'pitch_cluster', 'pitches');
+    clusterSegments(data.track, 4, 'timbre_cluster', 'timbre');
+    clusterSegments(data.track, 12, 'pitch_cluster', 'pitches');
     assignPitches(data.track);
 }
 

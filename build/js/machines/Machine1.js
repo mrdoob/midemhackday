@@ -1,4 +1,4 @@
-var Machine1 = function ( sequencer, data ) {
+var Machine1 = function ( sequencer, data, filter ) {
 
 	var container = new THREE.Object3D();
 	container.position.x = - 50;
@@ -109,29 +109,31 @@ var Machine1 = function ( sequencer, data ) {
 
 	var segs = data.track.analysis.segments;
 
-	for (var i = 0; i < segs.length; i++) {
+    if (!filter || filter(seg)) {
+        for (var i = 0; i < segs.length; i++) {
 
-		var seg = segs[i];
-		var volume = Math.floor( Math.random() * 3 ); // 0-2
+            var seg = segs[i];
+            var volume = Math.floor( Math.random() * 3 ); // 0-2
 
-		for (var j = 0; j < seg.pitch_list.length; j++) {
+            for (var j = 0; j < seg.pitch_list.length; j++) {
 
-			var mesh = new THREE.Mesh( geometry, material );
-			mesh.position.y = 50;
-			mesh.position.z = Math.floor( seg.pitch_list[j] ) * 10;
-			mesh.castShadow = true;
-			mesh.receiveShadow = true;
-			container.add( mesh );
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.position.y = 50;
+                mesh.position.z = Math.floor( seg.pitch_list[j] ) * 10;
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                container.add( mesh );
 
-			var effect = new Bounce1Effect( mesh, volume );
-			sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
+                var effect = new Bounce1Effect( mesh, volume );
+                sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
 
-			var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ] );
-			sequencer.add( effect, seg.start, seg.start + 0.5);
+                var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) * 3 + volume ] );
+                sequencer.add( effect, seg.start, seg.start + 0.5);
 
-		}
+            }
 
-	}
+        }
+    }
 
 	return container;
 
