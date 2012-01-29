@@ -18,20 +18,16 @@ function init() {
 	var ambient = new THREE.AmbientLight( 0x606060 );
 	scene.add( ambient );
 
-	var light = new THREE.DirectionalLight( 0xffffff, 2 );
-	light.position.set( 0, 150, 0 );
+	var light = new THREE.SpotLight( 0xffffff, 1.75 );
+	light.position.set( 0, 200, 0 );
 	light.castShadow = true;
-	light.shadowDarkness = 0.25;
-	scene.add( light );
-
-	var light = new THREE.DirectionalLight( 0xffffff, 0.25 );
-	light.position.set( 0, -1, 0 );
+	light.shadowDarkness = 0.75;
 	scene.add( light );
 
 	sequencer = new Sequencer();
 
-	timer = new Timer(12);
-	timer.loop = true;
+	timer = new Timer();
+	// timer.loop = true;
 	timer.play();
 
 	scene.add( new Machine1( sequencer ) );

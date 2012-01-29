@@ -27,6 +27,11 @@
 				canvas = document.createElement( 'canvas' );
 				canvas.width = 1024;
 				canvas.height = 512;
+				canvas.addEventListener( 'mousedown', function ( event ) {
+
+					event.preventDefault();
+
+				}, false );
 				document.body.appendChild( canvas );			
 
 				canvas.context = canvas.getContext( '2d' );

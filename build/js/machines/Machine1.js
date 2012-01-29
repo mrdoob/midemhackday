@@ -4,6 +4,8 @@ var Machine1 = function ( sequencer ) {
 	container.position.x = -50;
 	container.position.z = - ( 12 / 2 ) * 10;
 
+	var drums = [];
+
 	var shape = [
 
 		new THREE.Vector3( 6, 0, 0 ),
@@ -21,15 +23,15 @@ var Machine1 = function ( sequencer ) {
 	var path = "files/cubemap/";
 	var format = '.jpg';
 	var urls = [
-			path + 'px' + format, path + 'nx' + format,
-			path + 'py' + format, path + 'ny' + format,
-			path + 'pz' + format, path + 'nz' + format
-		];
+		path + 'px' + format, path + 'nx' + format,
+		path + 'py' + format, path + 'ny' + format,
+		path + 'pz' + format, path + 'nz' + format
+	];
 
 	var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
 	reflectionCube.format = THREE.RGBFormat;
 
-	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
+	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	for ( var i = 0, l = 12; i < l; i ++ ) {
 
@@ -41,6 +43,8 @@ var Machine1 = function ( sequencer ) {
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		container.add( mesh );
+
+		drums.push( mesh );
 
 		var mesh = new THREE.Mesh( cannon, material );
 		mesh.position.x = 0;
