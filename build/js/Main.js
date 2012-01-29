@@ -65,11 +65,32 @@ function init() {
 	var ambient = new THREE.AmbientLight( 0x606060 );
 	scene.add( ambient );
 
-	var light = new THREE.SpotLight( 0xffffff, 1.75 );
-	light.position.set( 0, 200, 0 );
+	var light = new THREE.SpotLight( 0xffffff, 2 );
+	light.position.set( 0, 300, 0 );
 	light.castShadow = true;
-	light.shadowDarkness = 0.75;
+	light.shadowDarkness = 0.5;
 	scene.add( light );
+
+	/*
+
+	var geometry = new THREE.CylinderGeometry( 2, 2, 1000, 10 );
+	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, combine: THREE.MixOperation, reflectivity: 0.25 } );
+
+	for ( var i = 0; i < 50; i ++ ) {
+
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.position.x = Math.random() * 400 - 200;
+		mesh.position.y = - Math.random() * 100 - 100;
+		mesh.position.z = Math.random() * 400 - 200;
+		mesh.rotation.x = 90 * Math.PI / 180;
+		mesh.rotation.z = Math.floor( Math.random() * 4 ) * 90 * Math.PI / 180;
+		mesh.receiveShadow = true;
+		mesh.castShadow = true;
+		scene.add( mesh );
+
+	}
+
+	*/
 
 	renderer = new THREE.WebGLRenderer( { alpha: false } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -94,6 +115,8 @@ function build() {
 	fetchTrackInfoBySongID( songID, function ( data ) {
 
 		scene.add( new Machine1( sequencer, data ) );
+
+		scene.add( new Machine2( sequencer, data ) );
 
 		audio.src = data.track.audio;
 		audio.play();
