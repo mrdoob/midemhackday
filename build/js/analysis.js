@@ -31,8 +31,11 @@ function filter(data) {
     console.log("filtering " + data.track.analysis.segments.length + " segments");
     clusterSegments(data.track, 12, 'timbre_cluster', 'timbre');
     clusterSegments(data.track, 12, 'pitch_cluster', 'pitches');
+    assignPitches(data.track);
     filterSegments(data.track);
 }
+
+
 
 
 function filterSegments(track) {
@@ -55,6 +58,39 @@ function filterSegments(track) {
     }
     track.analysis.fsegments = fsegs;
     console.log('fs', track.analysis.fsegments.length);
+}
+
+function assignPitches(track) {
+    var segs = track.analysis.segments;
+    for (var i = 0; i < segs.length; i++) {
+        var seg = segs[i];
+        seg.pitch_list = getPitchList(seg);
+    }
+}
+
+function getPitchList(seg) {
+    var max = 0;
+    var bestIndex = 0;
+    for (var i = 0; i < seg.pitches.length; i++) {
+        if (seg.pitches[i] > max) {
+            max = seg.pitches[i];
+            bestIndex = i;
+        }
+    }
+
+    var pitches = [];
+    for (var i = 0; i < seg.pitches.length; i++) {
+        if (seg.pitches[i] > max * .50) {
+            pitches.push(i);
+        }
+    }
+    // if all the pitches are high, it is really just
+    // noise so collapse those into a single pitch
+
+    if (pitches.length > 4) {
+        pitches = [ bestIndex ] ;
+    }
+    return pitches;
 }
 
 function isSimilar(seg1, seg2) {

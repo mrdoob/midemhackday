@@ -84,42 +84,29 @@ function init() {
 
 	}
 
-    /*
-	var geometry = new THREE.SphereGeometry( 2 );
-
-	for ( var i = 0, l = 100; i < l; i ++ ) {
-
-		var effect = new TestEffect( geometry );
-		effect.object.position.z = Math.floor( Math.random() * 12 ) * 10;
-		machine1.add( effect.object );
-
-		sequencer.add( effect, i / 8, i / 8 + 1 );
-
-	}
-    */
-
-	/*
-	var cube = new THREE.Mesh( new THREE.CubeGeometry( 10, 10, 10 ), new THREE.MeshNormalMaterial() );
-	scene.add( cube );
-	*/
 
 	renderer = new THREE.WebGLRenderer( { alpha: false } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
-    fetchTrackInfoBySongID('SOMMETY12A8C1368FE',    // chopin score: 5
-    //fetchTrackInfoBySongID('SOBRCCG12B0B8099F8',    // justice score: 5
-    //fetchTrackInfoBySongID('SOUBKFT12A6701F07A',
+
+    //var songID = 'SOMAJBN12B20E5E531';    // beatles score: 5
+    //var songID = 'SODPFTL12B0B80BE1A';    // moonlight score: 5
+    //var songID = 'SOCNYQF12B0B8067D4';    // chopin2 score: 8
+    //var songID = 'SOPNOJG12B0B808F24';    // vivaldi score: 4
+    //var songID = 'SOUBKFT12A6701F07A';
+    var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
+    //var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8
+
+    fetchTrackInfoBySongID(songID,    
         function(data) {
             var segs = data.track.analysis.segments;
             audio.src = data.track.audio;
-            var getColor = normalizeColor(data.track);
             var geometry = new THREE.SphereGeometry(2);
             for (var i = 0; i < segs.length; i++) {
                 var seg = segs[i];
-                var pitches = getPitches(seg);
-                for (var j = 0; j < pitches.length; j++) {
+                for (var j = 0; j < seg.pitch_list.length; j++) {
                     var effect = new TestEffect( geometry);
-                    effect.object.position.z = Math.floor( pitches[j]  ) * 10;
+                    effect.object.position.z = Math.floor( seg.pitch_list[j]  ) * 10;
                     machine1.add( effect.object );
                     sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
                 }
@@ -128,85 +115,10 @@ function init() {
         });
 }
 
-function getSize(seg) {
-    var loud = seg.loudness_max;
-    var min = -60;
-    var max = 0;
-    var size = (loud - min) / (max - min) * 5 + .2;
-    return size;
-}
-
-function getPitches(seg) {
-    var max = 0;
-    var bestIndex = 0;
-    for (var i = 0; i < seg.pitches.length; i++) {
-        if (seg.pitches[i] > max) {
-            max = seg.pitches[i];
-        }
-    }
-
-    var pitches = [];
-    for (var i = 0; i < seg.pitches.length; i++) {
-        if (seg.pitches[i] > max * .50) {
-            pitches.push(i);
-        }
-    }
-    return pitches;
-}
-
-function normalizeColor(track) {
-    var cmin = [100,100,100];
-    var cmax = [-100,-100,-100];
-
-    var qlist = track.analysis.segments;
-    for (var i = 0; i < qlist.length; i++) {
-        for (var j = 0; j < 3; j++) {
-            var t = qlist[i].timbre[j];
-
-            if (t < cmin[j]) {
-                cmin[j] = t;
-            }
-            if (t > cmax[j]) {
-                cmax[j] = t;
-            }
-        }
-    }
-    return function(seg) {
-        var results = []
-        for (var i = 0; i < 3; i++) {
-            var t = seg.timbre[i];
-            var norm = (t - cmin[i]) / (cmax[i] - cmin[i]);
-            results[i] = norm * 255;
-        }
-        return results[0] * 256 * 256 * 256 + results[1] * 256 * 256 + results[2] * 256
-    };
-}
-
-function getColor(seg) {
-    var results = []
-    for (var i = 0; i < 3; i++) {
-        var t = seg.timbre[i];
-        var norm = (t - cmin[i]) / (cmax[i] - cmin[i]);
-        results[i] = norm * 255;
-    }
-    return to_rgb(results[0], results[1], results[2]);
-}
-
-function to_rgb(r, g, b) { 
-    return "#" + convert(r) + convert(g) + convert(b); 
-}
-
-function convert(value) { 
-    var integer = Math.round(value);
-    var str = Number(integer).toString(16); 
-    return str.length == 1 ? "0" + str : str; 
-};
 
 function animate() {
-
 	requestAnimationFrame( animate );
 	update();
-
 }
 
 function update() {
