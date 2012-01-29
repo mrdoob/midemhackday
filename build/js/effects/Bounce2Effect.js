@@ -5,9 +5,9 @@ var Bounce2Effect = function ( mesh ) {
 	var position = new THREE.Vector3();
 
 	var path = [
-		new THREE.Vector3( 0, 50, 0 ),
-		new THREE.Vector3( 100, 50, 0 ),
-		new THREE.Vector3( 18, 0, 0 )
+		new THREE.Vector3( 0, 35, 0 ),
+		new THREE.Vector3( 40, 25, 0 ),
+		new THREE.Vector3( 79, 5, 0 )
 	];
 
 
@@ -32,7 +32,7 @@ var Bounce2Effect = function ( mesh ) {
 			position.multiplyScalar( progress * 2 );
 			position.addSelf( path[ 0 ] );
 
-			position.y += Math.sin( Math.PI * progress * 2 ) * 25;
+			position.y += Math.sin( Math.PI * progress * 2 ) * 55;
 
 		} else {
 

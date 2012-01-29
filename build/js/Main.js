@@ -57,7 +57,7 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.x = 0;
-	camera.position.y = 150;
+	camera.position.y = 100;
 	camera.position.z = 300;
 	camera.target = new THREE.Vector3( 0, 25, 0 );
 	scene.add( camera );
@@ -68,7 +68,11 @@ function init() {
 	var light = new THREE.SpotLight( 0xffffff, 2 );
 	light.position.set( 0, 300, 0 );
 	light.castShadow = true;
-	light.shadowDarkness = 0.5;
+	light.shadowDarkness = 0.25;
+	scene.add( light );
+
+	var light = new THREE.DirectionalLight( 0xffffff, 1 );
+	light.position.set( 0, - 300, 0 );
 	scene.add( light );
 
 	/*

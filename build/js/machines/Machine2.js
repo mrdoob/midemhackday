@@ -2,7 +2,7 @@ var Machine2 = function ( sequencer, data, filter ) {
 
 	var container = new THREE.Object3D();
 
-	var drums = [];
+	var groups = [], drums = [];
 
 	var shape = [
 
@@ -34,7 +34,16 @@ var Machine2 = function ( sequencer, data, filter ) {
 	var material = new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
 	var mesh = new THREE.Mesh( cannon, material );
-	mesh.position.y = 25;
+	mesh.position.y = 20;
+	mesh.rotation.x = 90 * Math.PI / 180;
+	mesh.rotation.y = Math.PI;
+	mesh.scale.set( 0.75, 0.75, 0.75 );
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
+	container.add( mesh );
+
+	var mesh = new THREE.Mesh( cannon, material );
+	mesh.position.y = 15;
 	mesh.rotation.x = 90 * Math.PI / 180;
 	mesh.rotation.y = Math.PI;
 	mesh.scale.set( 0.75, 0.75, 0.75 );
@@ -47,7 +56,10 @@ var Machine2 = function ( sequencer, data, filter ) {
 
 		var group = new THREE.Object3D();
 		group.rotation.y = ( i / l ) * Math.PI * 2;
+		// group.rotation.z = Math.random() * Math.PI / 8;
 		container.add( group );
+
+		groups.push( group );
 
 		var mesh = new THREE.Mesh( pad, new THREE.MeshPhongMaterial( { color: 0xff8020, ambient: 0x202020, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } ) );
 		mesh.position.x = 40;
@@ -68,9 +80,7 @@ var Machine2 = function ( sequencer, data, filter ) {
 		mesh.scale.set( 0.5, 0.5, 0.5 );
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
-		group.add( mesh );
-
-		
+		group.add( mesh );		
 
 	}
 
@@ -85,20 +95,21 @@ var Machine2 = function ( sequencer, data, filter ) {
         for (var i = 0; i < segs.length; i++) {
 
             var seg = segs[i];
+            var note = Math.floor( Math.random() * 40 );
 
             for (var j = 0; j < seg.pitch_list.length; j++) {
 
                 var mesh = new THREE.Mesh( geometry, material );
                 mesh.position.y = 50;
-                mesh.position.z = Math.floor( seg.pitch_list[j] ) * 10;
+                // mesh.position.z = Math.floor( seg.pitch_list[j] ) * 10;
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
-                container.add( mesh );
+                groups[ note ].add( mesh );
 
-                var effect = new Bounce1Effect( mesh );
-                sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
+                var effect = new Bounce2Effect( mesh );
+                sequencer.add( effect, seg.start - 1, seg.start + 1);
 
-                var effect = new BrightenEffect( drums[ Math.floor( seg.pitch_list[j] ) ] );
+                var effect = new BrightenEffect( drums[ note ] ); // Math.floor( seg.pitch_list[j] )
                 sequencer.add( effect, seg.start, seg.start + 0.5);
 
             }
