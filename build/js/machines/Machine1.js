@@ -1,4 +1,4 @@
-var Machine1 = function ( sequencer ) {
+var Machine1 = function ( sequencer, data ) {
 
 	var container = new THREE.Object3D();
 	container.position.x = -50;
@@ -70,22 +70,32 @@ var Machine1 = function ( sequencer ) {
 
 	}
 
+	//
+
 	var geometry = new THREE.SphereGeometry( 2 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xffffff, ambient: 0x808080, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 } );
 
-	for ( var i = 0, l = 100; i < l; i ++ ) {
+	var segs = data.track.analysis.segments;
 
-		var mesh = new THREE.Mesh( geometry, material );
-		mesh.position.y = 50;
-		mesh.position.z = Math.floor( Math.random() * 12 ) * 10;
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
-		container.add( mesh );
+	for (var i = 0; i < segs.length; i++) {
 
-		var effect = new Bounce1Effect( mesh );
-		sequencer.add( effect, i / 8, i / 8 + 1 );
+		var seg = segs[i];
 
-	}	
+		for (var j = 0; j < seg.pitch_list.length; j++) {
+
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.position.y = 50;
+			mesh.position.z = Math.floor( seg.pitch_list[j]  ) * 10;
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
+			container.add( mesh );
+
+			var effect = new Bounce1Effect( mesh );
+			sequencer.add( effect, seg.start - 0.5, seg.start + 0.5);
+
+		}
+
+	}
 
 	return container;
 
