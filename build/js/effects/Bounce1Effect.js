@@ -1,4 +1,4 @@
-var Bounce1Effect = function ( mesh ) {
+var Bounce1Effect = function ( mesh, volume ) {
 
 	mesh.visible = false;
 
@@ -17,6 +17,30 @@ var Bounce1Effect = function ( mesh ) {
 		new THREE.Vector3( 32, 25, 0 ),
 		new THREE.Vector3( 18, 0, 0 )
 	] );
+
+	//
+
+	for ( var i = 0, l = spline1.points.length; i < l; i ++ ) {
+
+		switch ( volume ) {
+
+			case 0:
+				spline1.points[ i ].x *= 0.95;
+				spline1.points[ i ].y *= 0.95;
+				spline2.points[ i ].x *= 0.95;
+				spline2.points[ i ].y *= 0.95;
+				break;
+
+			case 2:
+				spline1.points[ i ].x *= 1.05;
+				spline1.points[ i ].y *= 1.05;
+				spline2.points[ i ].x *= 1.05;
+				spline2.points[ i ].y *= 1.05;
+				break;
+
+		}
+
+	}
 
 	this.show = function () {
 
