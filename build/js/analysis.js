@@ -1,48 +1,74 @@
 
+var host = 'http://localhost:8642';
+var host = 'http://labs.echonest.com';
 
 function fetchTrackInfoByCombined(combined, callback) {
-    var url ='http://labs.echonest.com/SongServer/search?callback=?&q=' + combined;
+    var url = host + '/SongServer/search?callback=?&q=' + combined;
     console.log("Fetching track", combined);
-    getJSONP(url, function(data) { filter(data); callback(data); });
+    getJSONP(url, function(data) { 
+        console.log('filtering data ...');
+        filter(data); 
+        console.log('data filtered, here we go ...');
+        callback(data); 
+    });
 }
 
 function fetchTrackInfoBySongID(sid, callback) {
     if (sid.indexOf('TR') == 0) {
         fetchTrackInfoBySpecial(sid, callback);
     }  else {
-        var url ='http://labs.echonest.com/SongServer/search?callback=?&sid=' + sid;
+        var url =host + '/SongServer/search?callback=?&sid=' + sid;
         console.log("Fetching track", sid);
-        getJSONP(url, function(data) { filter(data); callback(data); });
+        getJSONP(url, function(data) { 
+            console.log('filtering data ...');
+            filter(data); 
+            console.log('data filtered, here we go ...');
+            callback(data); 
+        });
     }
 }
 
 function fetchTrackInfoBySpecial(tid, callback) {
-    var url ='http://localhost:8642/SongServer/search?callback=?&special=' + tid;
-    var url ='http://labs.echonest.com/SongServer/search?callback=?&special=' + tid;
+    var url = host + '/SongServer/search?callback=?&special=' + tid;
+    var url = host + '/SongServer/search?callback=?&special=' + tid;
     console.log("Fetching track", tid);
-    getJSONP(url, function(data) { filter(data); callback(data); });
+    getJSONP(url, function(data) { 
+        console.log('filtering data ...');
+        filter(data); 
+        console.log('data filtered, here we go ...');
+        callback(data); 
+    });
 }
 
 function fetchTrackInfoByArtistAndTitle(artist, title, callback) {
-    var url ='http://labs.echonest.com/SongServer/search?callback=?&artist=' + artist + '&title=' + title;
+    var url = host + '/SongServer/search?callback=?&artist=' + artist + '&title=' + title;
     console.log("Fetching track", artist, title);
     getJSONP(url, function(data) { filter(data); callback(data); });
 }
 
 function jq_fetchTrackInfoByArtistAndTitle(artist, title, callback) {
-    var url ='http://labs.echonest.com/SongServer/search?callback=?';
+    var url = host + '/SongServer/search?callback=?';
     $.getJSON(url, { 'artist': artist, 'title': title}, 
         function(response) {    
+            console.log('filtering data ...');
             filter(data);
+            console.log('data filtered, here we go ...');
             callback(data); 
         });
 }
 
 function filter(data) {
+    console.log('filter segments');
     filterSegments(data.track);
+    console.log('cluster timbre segments');
     clusterSegments(data.track, 4, 'timbre_cluster', 'timbre');
+    console.log('cluster pitch segments');
     clusterSegments(data.track, 12, 'pitch_cluster', 'pitches');
+    console.log('assign pitch buckets');
     assignPitches(data.track);
+    console.log('assign loudness buckets');
+    assignLoudness(data.track);
+    console.log('filter done');
 }
 
 
@@ -68,6 +94,37 @@ function filterSegments(track) {
     }
     track.analysis.fsegments = fsegs;
     track.analysis.segments = fsegs;
+}
+
+function assignLoudness(track) {
+    var buckets = 3;
+    var min_loud = 0;
+    var max_loud = -60;
+    var segs = track.analysis.segments;
+    // first seg is often zero max_loudness so just skip it
+    for (var i = 1; i < segs.length; i++) {
+        var seg = segs[i];
+        var loud = seg.loudness_max;
+        if (loud > max_loud) {
+            max_loud = loud;
+        }
+        if (loud < min_loud) {
+            min_loud = loud;
+        }
+    }
+    var range = max_loud - min_loud;
+    for (var i = 0; i < segs.length; i++) {
+        var seg = segs[i];
+        var loud = seg.loudness_max;
+        var nloud = (loud - min_loud) / range;
+        if (nloud < 0) {
+            nloud = 0;
+        }
+        if (nloud > 1) {
+            nloud = 1; 
+        }
+        seg.loudness_bucket = Math.floor(nloud * buckets);
+    }
 }
 
 function assignPitches(track) {
@@ -97,7 +154,7 @@ function getPitchList(seg) {
     // if lots of the pitches are high, it is really just
     // noise so collapse those into a single pitch
 
-    if (pitches.length > 4) {
+    if (pitches.length > 6) {
         pitches = [ bestIndex ] ;
     }
     return pitches;
@@ -233,6 +290,16 @@ function getJSONP( url, callback ) {
     script.src = url.replace( 'callback=?','callback=' + ud );
 
     document.body.appendChild( script );
+}
+
+function mapLoudness(seg) {
+    if (seg.loudness_max > -10) {
+        return 2;
+    } else if (seg.loudness_max > -20) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 

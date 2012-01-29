@@ -108,24 +108,31 @@ function build() {
 	// var songID = 'SODPFTL12B0B80BE1A';    // moonlight score: 5
 	// var songID = 'SOCNYQF12B0B8067D4';    // chopin2 score: 8
 	// var songID = 'SOPNOJG12B0B808F24';    // vivaldi score: 4
-	// var songID = 'SOUBKFT12A6701F07A';
-	// var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
     // var songID = 'SOBDWET12A6701F114';    // Daft Punk Steam Machine
     // var songID = 'SOWGEEH12B0B80AD1C';    // Wendy carlos, Concerto Brandebourgeois in D Major - Allegro
-	// var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8
 	// var songID = 'SOVCXFC12B0B808739';    // moog machine
 	// var songID = 'SOAALZA12A8C142A41';    // fur elise
 	// var songID = 'SOSBGUU12B0B80BA69';    // Daft Punk Around The world
 	// var songID = 'SOPBSOF12B0B80620A';    // Fanfare for the common man
-	var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
+	// var songID = 'SOTKFEY12A8C137EB7';    // The final countdown, seems to kill app
+	// var songID = 'SOLUNLM12B0B806C67';    // apollo/joy
+	//var songID = 'SOMMETY12A8C1368FE';    // chopin score: 8, best
+	//var songID = 'SOBRCCG12B0B8099F8';    // justice score: 5
+	//var songID = 'SOQMVDE12B0B80BA5D';    // DP aerodynamic
+	//var songID = 'TRVUFMS134AF802D1E';    // Mind Heist  inception
+	//var songID = 'SOLLSWY12AF72A55D5';    // DP Phoenix
+	//var songID = 'SOUBKFT12A6701F07A';   // DP robot rock
+	//var songID = 'SOKGGVP12B0B80BA6C';    // DP short circuit 
+	var songID = 'SOKLMEP12B0B8062E2';    // HH Chamelion
 
 	fetchTrackInfoBySongID( songID, function ( data ) {
 
+        console.log('adding machines');
 		scene.add( new Machine1( sequencer, data ) );
-
-		scene.add( new Machine2( sequencer, data ) );
+		//scene.add( new Machine2( sequencer, data ) );
 
 		audio.src = data.track.audio;
+        console.log('playing audio');
 		audio.play();
 
 	});

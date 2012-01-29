@@ -78,11 +78,9 @@ var Machine2 = function ( sequencer, data, filter ) {
 
 	var segs = data.track.analysis.segments;
 
-    if (!filter || filter(seg)) {
-        for (var i = 0; i < segs.length; i++) {
-
-            var seg = segs[i];
-
+    for (var i = 0; i < segs.length; i++) {
+        var seg = segs[i];
+        if (!filter || filter(seg)) {
             for (var j = 0; j < seg.pitch_list.length; j++) {
 
                 var mesh = new THREE.Mesh( geometry, material );
