@@ -37,7 +37,7 @@ function init() {
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
 	document.body.appendChild( renderer.domElement );
-
+    analysisTest();
 }
 
 function animate() {
