@@ -2,17 +2,14 @@ var scene, camera, renderer;
 var audio, sequencer;
 var pathCamera, pathCameraTarget;
 
+
 init();
-build();
-animate();
 
 function init() {
 
 	audio = document.createElement('audio');
 
 	document.addEventListener( 'keydown', function ( event ) {
-        console.log(event.keyCode);
-
 		switch ( event.keyCode ) {
 
 			/* space */
@@ -104,12 +101,17 @@ function init() {
 	}
 	*/
 
-	renderer = new THREE.WebGLRenderer( { alpha: false } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.shadowMapEnabled = true;
-	renderer.shadowMapSoft = true;
-	document.body.appendChild( renderer.domElement );
-
+    if( Detector.webgl ){
+        renderer = new THREE.WebGLRenderer( { alpha: false } );
+        renderer.setSize( window.innerWidth, window.innerHeight - 14 );
+        renderer.shadowMapEnabled = true;
+        renderer.shadowMapSoft = true;
+        document.body.appendChild( renderer.domElement );
+        build();
+        animate();
+    } else{
+        Detector.addGetWebGLMessage();
+    }
 }
 
 function build() {
