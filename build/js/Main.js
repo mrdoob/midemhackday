@@ -11,7 +11,7 @@ if ( Detector.webgl ) {
 
 } else {
 
-	document.body.appendChild( Detector.getWebGLMessage() );
+	document.body.appendChild( Detector.getWebGLErrorMessage() );
 
 }
 
