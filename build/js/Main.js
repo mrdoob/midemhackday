@@ -3,7 +3,18 @@ var audio, sequencer;
 var pathCamera, pathCameraTarget;
 
 
-init();
+if ( Detector.webgl ) {
+
+	init();
+	build();
+	animate();
+
+} else {
+
+	document.body.appendChild( Detector.getWebGLMessage() );
+
+}
+
 
 function init() {
 
@@ -65,8 +76,8 @@ function init() {
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.x = 0;
 	camera.position.y = 100;
-	camera.position.z = 300;
-	camera.target = new THREE.Vector3( 0, 25, 0 );
+	camera.position.z = 100;
+	camera.target = new THREE.Vector3( 0, 35, 200 );
 	scene.add( camera );
 
 	var ambient = new THREE.AmbientLight( 0x606060 );
@@ -101,17 +112,12 @@ function init() {
 	}
 	*/
 
-    if( Detector.webgl ){
-        renderer = new THREE.WebGLRenderer( { alpha: false } );
-        renderer.setSize( window.innerWidth, window.innerHeight - 14 );
-        renderer.shadowMapEnabled = true;
-        renderer.shadowMapSoft = true;
-        document.body.appendChild( renderer.domElement );
-        build();
-        animate();
-    } else{
-        Detector.addGetWebGLMessage();
-    }
+	renderer = new THREE.WebGLRenderer( { alpha: false } );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapSoft = true;
+	document.body.appendChild( renderer.domElement );
+
 }
 
 function build() {
